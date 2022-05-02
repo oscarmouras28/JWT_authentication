@@ -32,12 +32,11 @@ def sign_up():
         email = request.json.get("email")
         password = request.json.get("password")
         is_active = request.json.get("active")
-        password_hash=bcrypt.generate_password_hash(password)
     
         user=User()
         user.email=email
         user.is_active=is_active
-        user.password=password_hash
+        user.password=password
     
         db.session.add(user)
         db.session.commit()
