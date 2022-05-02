@@ -13,7 +13,6 @@ app.config["SECRET_KEY"] = "secret-key"
 app.config["JWT_SECRET_KEY"] = "super-secret"
 
 
-jwt = JWTManager(app)
 bcrypt= Bcrypt(app)
 
 
@@ -50,26 +49,53 @@ def sign_up():
     if request.method == 'GET':
     
         response_body = {
-            "message": "soy sign-up"
+            "message": "sign-up"
         }
         
         return jsonify(response_body), 200
 
 
-@api.route('/sign-in', methods=['GET'])
+@api.route('/sign-in', methods=['POST','GET'])
 def sign_in():
 
-    response_body = {
-        "message": "soy sign-in"
-    }
+    if request.method == 'POST':
+        email = request.json.get("email")
+        password = request.json.get("password")
+        
+        user = User.query.filter_by(email=email).first()
+        
+        if user is not None:
+            if user.password==password:
+                access_token = create_access_token(identity=email)
+                return jsonify({"access_token":access_token,
+                                "user":user.serialize(),
+                                "success":True,
+                                "message":"Inicio de sesion exitoso"}),200
+        else:
+            response_body = {
+            "message": "Usuario o contraseña incorrecto"
+            }
+
+        return jsonify("inicio de sesion"), 200
+
+    if request.method == 'GET':
+    
+        response_body = {
+            "message": "sign-in"
+        }
+        
+        return jsonify(response_body), 200
 
     return jsonify(response_body), 200
 
 @api.route('/protected', methods=['GET'])
+@jwt_required()
 def protected_page():
-
+    user=User.query.get(1)
+      
     response_body = {
-        "message": "top secret"
+        "user":user.serialize(),
+        "message": "secome losmocos"
     }
 
     return jsonify(response_body), 200

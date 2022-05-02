@@ -11,9 +11,8 @@ export const ProtectedInfoTopSecret = () => {
   return (
     <div className="text-center mt-5">
       <h1>
-        {store.message||"na de na por ahora"}
+        {store.message||"Debe iniciar sesion para ver"}
       </h1>
-      <h1>el oscar se come los mocos 😈</h1>
     </div>
   );
 };
