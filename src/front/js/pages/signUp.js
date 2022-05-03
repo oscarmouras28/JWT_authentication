@@ -1,7 +1,6 @@
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Context } from "../store/appContext";
 import rigoImageUrl from "../../img/rigo-baby.jpg";
-
 
 export const SignUp = () => {
   const { store, actions } = useContext(Context);
@@ -9,16 +8,49 @@ export const SignUp = () => {
   useEffect(() => {
     actions.getMessage("sign-up");
     store.message;
+    form
   }, []);
 
-  const [form, setform] = useState()
+  const [form, setform] = useState({});
+  const handleChange = (e) => {
+    setform({ ...form, [e.target.name]: e.target.value, "active":true });
+  };
+
+
+  function handleSubmit(event) {
+    {
+      event.preventDefault();
+      fetch(
+        "https://3001-4geeksacade-reactflaskh-3j2qdwrxe2m.ws-us43.gitpod.io/api/sign-up",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(form),
+        }
+      )
+        .then((response) => {
+          console.log(response);
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+    }
+  }
 
   return (
     <div className="text-center mt-5">
-      <h1>{store.message || "na de na por ahora"}</h1>
+      <h1>{store.message || "cargando..."}</h1>
       <div className="container">
-      <form>
-          <img className="mb-4" src={rigoImageUrl} alt="" width="72" height="57" />
+        <form>
+          <img
+            className="mb-4"
+            src={rigoImageUrl}
+            alt=""
+            width="72"
+            height="57"
+          />
 
           <div className="form-floating">
             <input
@@ -27,6 +59,8 @@ export const SignUp = () => {
               id="floatingInput"
               placeholder="name@example.com"
               name="email"
+              value={form.email}
+              onChange={handleChange}
             />
             <label htmlFor="floatingInput">Email address</label>
           </div>
@@ -37,12 +71,21 @@ export const SignUp = () => {
               id="floatingPassword"
               placeholder="Password"
               name="password"
+              value={form.password}
+              onChange={handleChange}
             />
             <label htmlFor="floatingPassword">Password</label>
           </div>
-          <button className="w-100 btn btn-lg btn-primary" type="submit">
-            Sign in
-          </button>
+          <div>
+            <button
+              className="w-100 btn btn-lg btn-primary"
+              type="submit"
+              onClick={handleSubmit}
+            >
+              Sign up
+            </button>
+          </div>
+
           <p className="mt-5 mb-3 text-muted">&copy; 2017-2021</p>
         </form>
       </div>

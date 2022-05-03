@@ -94,8 +94,7 @@ def protected_page():
     user=User.query.get(1)
       
     response_body = {
-        "user":user.serialize(),
-        "message": "secome losmocos"
+        "message": "el secreto del usuario "+user.email+" es que se come losmocos"
     }
 
     return jsonify(response_body), 200
